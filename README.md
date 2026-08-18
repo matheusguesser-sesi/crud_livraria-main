@@ -28,7 +28,7 @@ RF4: Excluir Livros: o sistema deve permitir a exclusão de informações de liv
  O SQL Injection é uma técnica de ataque onde alguém insere comandos SQL através dos campos de entrada da aplicação (formulários, campos de busca etc). Dessa forma, o banco de dados execua algo diferente do que o dev deseja.
  Enquanto a aplicação deseja receber um dado, a pessoa mal intencionada envia um código SQL disfarçado de dado. Dessa maneira, pode ocorrer de o banco executar isso como parte do comando.
 
-### Como Prepared Statements ajudam a proteger a aplicação?
+### Como Prepared Statements mitiga o problema do SQL Injection?
 
 Separando a estrutura do comando dos dados que serão inseridos. A query é montada em duas etapas: 
 1. Preparação: (comando é enviado ao banco com placeholders no lugar dos valores);
@@ -42,14 +42,57 @@ Dessa forma, ele elimina a causa raiz do SQL Injection, garantindo que o dado nu
 
 ### Locais onde o sistema realiza operações
 
+index.php: ``` SELECT * FROM livros ```
+public/cadastrar.php: ``` INSERT INTO livros ```
+public/editar.php: ``` SELECT * FROM livros ```
+public/atualizar.php: ``` UPDATE livros SET titulo=... ```
+public/excluir.php: ``` DELETE FROM livros WHERE id=$id ```
 
 
 ### Informações recebidas do usuário e utilizadas em comandos
 
+cadastrar.php: ```$_POST["titulo"], $_POST["autor"], $_POST["ano"] ```
+atualizar.php: ``` $_POST["id"], $_POST["titulo"], $_POST["autor"], $_POST["ano"] ```
+editar.php: ```editar.php: $_GET["id"]```
+excluir.php: ```$_GET["id"]```
 
 ### O que pode ser modificado?
 
+Vários arquivos podem ser modificados para que fiquem mais seguros utilizando Prepared Statements. Entretanto, o exemplo utilizado será o arquivo de atualizar os cadastros.
 
+*Arquivo a ser editado*
 
+<!-- <?php
+
+include "../infra/conexao.php";
+
+$titulo = $_POST["titulo"];
+$autor = $_POST["autor"];
+$ano = $_POST["ano"];
+
+$sql = "INSERT INTO livros (titulo,autor,ano) VALUES ('$titulo','$autor','$ano')";
+
+mysqli_query($conexao, $sql);
+
+header("Location: ../index.php");
+?> -->
 
 ## Alterações Realizadas
+
+<!-- <?php
+
+include "../infra/conexao.php";
+
+$titulo = $_POST["titulo"];
+$autor = $_POST["autor"];
+$ano = $_POST["ano"];
+
+$sql = "INSERT INTO livros (titulo, autor, ano) VALUES (?, ?, ?)";
+
+$stmt = $conexao->prepare($sql);
+$stmt->bind_param("ssi", $titulo, $autor, $ano);
+$stmt->execute();
+$stmt->close();
+
+header("Location: ../index.php");
+?> -->
