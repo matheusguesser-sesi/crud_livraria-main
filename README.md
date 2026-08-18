@@ -6,6 +6,7 @@ RF3: Editar Livros: o sistema deve permitir a alteração de informações de li
 RF4: Excluir Livros: o sistema deve permitir a exclusão de informações de livros já cadastrados;
 
 (1/2) RNF1: Validação dos Campos: O sistema não deve permitir o cadastro de livros com titulo, autor ou ano vazios.
+(2/2) RNF2: Segurança dos Dados: As operações que recebem informações fornecidas pelo usuário deverão utilizar Prepared Statements.
 
 
 # Pesquisa - Melhorando a Segurança do CRUD com Prepared Statements
